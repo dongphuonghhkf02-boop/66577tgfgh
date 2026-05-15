@@ -9,49 +9,40 @@ export type HowItWorksSection1Type = {
 /**
  * «Технологія врожаю» — секція з 4-ма стадіями.
  *
- * НОВА анімація (per референс-відео):
- *  ─────────────────────────────────────────────────────────────────────
- *  • Секція ПІНИТЬСЯ через JS-translateY у viewport на час 4×VH скролу.
- *    (position: sticky не використовуємо — батьківський контейнер у
- *    App.tsx має transform:scale(), у якому sticky ненадійний.)
- *  • Усі 4 карточки лежать в одній точці (z-stack) у правій колонці.
- *    Карточка 0 — стартова, видима за замовчуванням.
- *  • При скролі вниз: карточка N (N=1..3) виїздить ЗНИЗУ ВВЕРХ, повністю
- *    перекриваючи попередню карточку. Кожна реалізація відбувається за
- *    1 VH скролу (3VH разом для 3-х переходів + 1VH для першої сцени).
- *  • Карточки мають напівпрозорий фон (rgba .2), тому щоб не було
- *    bleed-through, попередня карточка ВИДАЄТЬСЯ (opacity 1 → 0) синхронно
- *    з тим, як нова насувається. На фінальному localProgress = 1 попередня
- *    повністю прозора, нова — на 100% видима.
- *  • При скролі назад анімація реверсується.
- *  • Ліва колонка (заголовок / підпис / кнопка) — СТАТИЧНА під час pin'у.
- *    Не рухається.
- *  • Після завершення анімації (4VH) секція відпускає скрол.
- *  ─────────────────────────────────────────────────────────────────────
+ * Pin реалізовано на НАТИВНОМУ `position: sticky` для stickyInner.
+ * Це усуває дрижіння (jitter), яке було при JS-translateY-pin'і — нативний
+ * sticky обробляється у composiotor-thread браузера й не має лагу від rAF.
+ *
+ * JS відповідає тільки за анімацію карточок (slide-up + fade) на основі
+ * scroll-progress 0..1.
+ *
+ * Структура:
+ *   <section>  ← висота = vh * SCROLL_VH / scale (скрол-бюджет)
+ *     <div .stickyInner>  ← position: sticky, top: 0, висота = vh / scale
+ *       <leaf .leftColumn .cardsHolder>
+ *         <cardSlot×4>  ← z-stack, JS керує transform / opacity / z-index
+ *       </cardsHolder>
+ *     </stickyInner>
+ *   </section>
  */
 
 const N_CARDS = 4;
-/* Скільки viewport-heights займає секція. 1VH — стан спокою (показ карточки 0)
-   + 3VH — по одному на кожен з трьох переходів (slide-in карточок 1, 2, 3). */
 const SCROLL_VH = 4;
-/* Стартовий offsetY для нової карточки в design-px (мусить бути більше
-   за висоту карточки + щось зверху, щоб картку точно не було видно
-   до старту її анімації). */
 const SLIDE_FROM_DESIGN_PX = 1100;
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
-/* Smooth, природна крива — повільніше біля 1, як на референсі. */
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
   className = "",
 }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const stickyRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
-  /* Висота секції рахується від реального viewportH / scale, щоб total scroll
-     дорівнював саме N×VH у viewport-пікселях (а не у design-px). */
+  /* Висоти в design-px. sticky має займати 1 viewport, а секція — N×VH
+     виходячи з реального viewport / scale, щоб скрол-бюджет точно
+     відповідав N×VH у viewport-пікселях. */
+  const [stickyHeightPx, setStickyHeightPx] = useState<number>(0);
   const [sectionPxHeight, setSectionPxHeight] = useState<number>(0);
 
   useLayoutEffect(() => {
@@ -60,9 +51,9 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
         1,
         Math.max(window.innerWidth, 1024) / 1920
       );
-      // у design-px (CSS px усередині scaled-контейнера)
-      const designHeight = (window.innerHeight * SCROLL_VH) / scale;
-      setSectionPxHeight(designHeight);
+      const vhDesign = window.innerHeight / scale;
+      setStickyHeightPx(vhDesign);
+      setSectionPxHeight(vhDesign * SCROLL_VH);
     };
     compute();
     window.addEventListener("resize", compute);
@@ -75,43 +66,18 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
     const tick = () => {
       raf = 0;
       const section = sectionRef.current;
-      const sticky = stickyRef.current;
       const cardsHolder = cardsRef.current;
-      if (!section || !sticky || !cardsHolder) return;
+      if (!section || !cardsHolder) return;
 
       const rect = section.getBoundingClientRect();
-      const sectionTop = rect.top; // viewport-px
-      const sectionH = rect.height; // viewport-px (real, після scale)
+      const sectionTop = rect.top;
+      const sectionH = rect.height;
       const vh = window.innerHeight;
 
-      const scale = Math.min(
-        1,
-        Math.max(window.innerWidth, 1024) / 1920
-      );
-
-      /* Прокручено в межах секції (viewport-px). 0 коли вершина секції
-         тільки-но дотягнулася до верху viewport'а. */
       const scrolledPx = Math.max(0, -sectionTop);
-      /* Скільки реального scroll'у нам потрібно для анімації — від вершини
-         секції і поки її низ не зрівняється з низом viewport'а. */
       const pinTotalPx = Math.max(1, sectionH - vh);
-
-      /* Пінимо sticky-контейнер: він фізично знаходиться вгорі секції
-         (top: 0), але через translateY ми «прикріплюємо» його до верху
-         viewport'а на час pin'у. Усі transform всередині scaled-контейнера
-         задаються в design-px → ділимо на scale. */
-      const stickyTranslateReal = Math.max(
-        0,
-        Math.min(scrolledPx, pinTotalPx)
-      );
-      sticky.style.transform = `translateY(${stickyTranslateReal / scale}px)`;
-
-      /* Прогрес 0..1 на час всієї pin-зони. */
       const progress = clamp01(scrolledPx / pinTotalPx);
 
-      /* 3 transition-вікна: [0, 1/3], [1/3, 2/3], [2/3, 1].
-         Картка 0 — завжди в стопці на translateY(0), її opacity тільки
-         падає коли в неї «насувається» картка 1. */
       const transitions = N_CARDS - 1; // 3
 
       const cardEls = cardsHolder.querySelectorAll<HTMLElement>(
@@ -120,11 +86,9 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
 
       cardEls.forEach((el, i) => {
         if (i === 0) {
-          // Базова картка: завжди в позиції, але fade'ається коли над
-          // нею з'являється картка 1.
           const t1 = clamp01(progress / (1 / transitions));
           const fade = easeOutCubic(t1);
-          el.style.transform = "translateY(0px)";
+          el.style.transform = "translate3d(0px, 0px, 0px)";
           el.style.opacity = String(1 - fade);
           el.style.visibility = fade < 1 ? "visible" : "hidden";
           el.style.zIndex = "10";
@@ -138,57 +102,32 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
         );
 
         if (localProg <= 0) {
-          /* Картка ще не з'явилася — повністю ховаємо. */
           el.style.visibility = "hidden";
           el.style.opacity = "0";
-          el.style.transform = `translateY(${SLIDE_FROM_DESIGN_PX}px)`;
+          el.style.transform = `translate3d(0px, ${SLIDE_FROM_DESIGN_PX}px, 0px)`;
           el.style.zIndex = String(10 + i * 10);
           return;
         }
 
-        /* Slide-up: from +SLIDE_FROM (нижче viewport) до 0 (точно
-           над попередньою карткою). */
         const eased = easeOutCubic(localProg);
         const y = SLIDE_FROM_DESIGN_PX * (1 - eased);
 
         el.style.visibility = "visible";
-        /* Opacity новонароджуваної картки: повністю прозора при localProg=0,
-           full opacity при localProg ~0.4+, щоб уникнути блимання при
-           crossfade'і з попередньою. */
         el.style.opacity = String(clamp01(localProg * 2.5));
-        el.style.transform = `translateY(${y}px)`;
+        el.style.transform = `translate3d(0px, ${y}px, 0px)`;
         el.style.zIndex = String(10 + i * 10);
-
-        /* Якщо нижче по стеку є card i (індекс i), що зараз TOP — її попередня
-           (i-1) має зникати. Ми це робимо в ітерації наступного i. Тут же,
-           додатково, fade-out для CURRENT card коли над нею з'являється
-           наступна. */
-        if (i < N_CARDS - 1 && localProg === 1) {
-          const nextStart = i / transitions;
-          const nextEnd = (i + 1) / transitions;
-          const nextProg = clamp01(
-            (progress - nextStart) / (nextEnd - nextStart)
-          );
-          if (nextProg > 0) {
-            const f = easeOutCubic(nextProg);
-            el.style.opacity = String(1 - f);
-            if (f >= 1) el.style.visibility = "hidden";
-          }
-        }
       });
 
-      /* Окремий прохід — fade-out для middle-карточок коли над ними
-         з'являється наступна. (Перевикористовуємо логіку, щоб не залежати
-         від localProg === 1 умови.) */
+      /* Fade-out для проміжних карток коли над ними з'являється наступна. */
       cardEls.forEach((el, i) => {
-        if (i === 0) return; // вже оброблено вище
-        if (i >= N_CARDS - 1) return; // в останньої наступної немає
+        if (i === 0) return;
+        if (i >= N_CARDS - 1) return;
         const winStart = (i - 1) / transitions;
         const winEnd = i / transitions;
         const localProg = clamp01(
           (progress - winStart) / (winEnd - winStart)
         );
-        if (localProg < 1) return; // картка ще тільки заїжджає — не чіпаємо
+        if (localProg < 1) return;
 
         const nextStart = i / transitions;
         const nextEnd = (i + 1) / transitions;
@@ -209,7 +148,6 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
     };
     const onResize = () => onScroll();
 
-    /* Init */
     tick();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -218,7 +156,7 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
       window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [sectionPxHeight]);
+  }, [sectionPxHeight, stickyHeightPx]);
 
   return (
     <section
@@ -227,9 +165,12 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
       className={[styles.howItWorksSection, className].join(" ")}
       data-testid="how-it-works-section"
     >
-      {/* sticky-pinned inner: займає рівно 1 viewport, JS тримає його
-          translate'ом у верху viewport'а під час pin'у. */}
-      <div ref={stickyRef} className={styles.stickyInner}>
+      <div
+        className={styles.stickyInner}
+        style={{
+          height: stickyHeightPx ? `${stickyHeightPx}px` : "100vh",
+        }}
+      >
         <img
           className={styles.leaf}
           src="/watermark.svg"
@@ -237,7 +178,6 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
           aria-hidden="true"
         />
 
-        {/* Ліва колонка — СТАТИЧНА всередині pinned inner. */}
         <div className={styles.leftColumn}>
           <h2 className={styles.title}>
             <span className={styles.titleBold}>технологія</span>
@@ -269,8 +209,6 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
           </button>
         </div>
 
-        {/* Права колонка: 4 картки в одній точці (z-stack). JS управляє
-            transform / opacity / visibility / z-index для кожної. */}
         <div ref={cardsRef} className={styles.cardsHolder}>
           <div data-card-idx={0} className={styles.cardSlot}>
             <CardStep1

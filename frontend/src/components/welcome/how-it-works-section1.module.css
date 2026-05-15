@@ -1,13 +1,19 @@
 /* =========================================================================
    How It Works Section — «ТЕХНОЛОГІЯ ВРОЖАЮ»
-   Card-stack scroll-pinned animation.
 
-   Section parent: tall (4×VH), used purely as scroll-room.
-   Inside it: a "stickyInner" wrapper — exactly 1 viewport-height tall — that
-   JS pins to the top of the viewport via translateY for the duration of the
-   pin range. Inside stickyInner: left column (static) + cards-holder where
-   4 cards are stacked at the SAME absolute position; JS animates their
-   translateY / opacity / z-index.
+   Native sticky pin (no JS-driven translate → no jitter / judder).
+
+   Hierarchy:
+     section  ← scroll-room (height ≈ N × vh / scale)
+       └─ stickyInner  ← position: sticky; top: 0; height = vh / scale
+            ├─ leaf (decor)
+            ├─ leftColumn (static)
+            └─ cardsHolder (4 stacked cards, JS-animated)
+
+   IMPORTANT: section must NOT create its own scroll container, otherwise
+   the sticky child will stick to the section's box rather than the viewport.
+   We use overflow: clip (NOT hidden) on stickyInner so the green panel
+   contains everything visually without becoming a scrolling ancestor.
    ========================================================================= */
 
 .howItWorksSection {
@@ -19,25 +25,24 @@
   color: var(--bg-green);
   font-size: 100px;
   text-align: left;
-  /* height: set inline via JS (sectionPxHeight) so total scroll = N × VH */
-  /* Don't clip the sticky inner — let it be pinned by transform */
-  overflow: hidden;
-  isolation: isolate;
+  /* No overflow rule here — sticky must use the document's viewport as its
+     scrolling ancestor. height is set inline via React. */
 }
 
-/* ---------- sticky inner: pinned to viewport via JS during scroll ---------- */
+/* ---------- sticky inner — native CSS sticky ---------- */
 .stickyInner {
-  position: absolute;
+  position: sticky;
   top: 0;
-  left: 0;
+  /* width matches the Figma design canvas — full 1920 strip */
   width: var(--width-1920);
-  /* exactly 1 viewport-height in design-px (computed via vh / scale at runtime
-     is fine, but for simplicity 100vh works inside the scaled container too,
-     because 100vh resolves to actual viewport height in CSS pixels). */
-  height: 100vh;
+  /* height set inline via React (= vh / scale) so it visually fills viewport
+     across all scales. Fallback: 100vh (works at scale=1). */
+  /* Clip cards that slide in from outside this region */
+  overflow: hidden;
+  /* GPU-composite for smoother paint */
   will-change: transform;
   z-index: 1;
-  /* So that absolutely-positioned children resolve against this */
+  /* Critical: do NOT add transform here — it would break the sticky context. */
 }
 
 /* ---------- decorative leaf ---------- */
@@ -132,8 +137,6 @@
   width: 753px;
   height: 399px;
   z-index: 2;
-  /* No overflow:hidden — cards slide in from below, must be visible
-     during transition. The section itself clips via overflow:hidden. */
 }
 
 .cardSlot {
@@ -143,12 +146,10 @@
   width: 753px;
   height: 399px;
   will-change: transform, opacity;
-  /* Smooth out raf quantisation */
   transition: opacity 0.18s linear;
   backface-visibility: hidden;
 }
 
-/* keep the inner CardStep1 <section> at the same size as its slot */
 .cardSlot > section {
   position: relative !important;
   top: 0 !important;
