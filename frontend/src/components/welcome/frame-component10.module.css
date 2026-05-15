@@ -1,189 +1,128 @@
-.rectangleParent {
-  margin-left: -2px;
-  align-self: stretch;
-  background-color: var(--text-cream);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 152px var(--padding-120) 194px;
-  box-sizing: border-box;
-  gap: 116px;
-  max-width: 100%;
-  flex-shrink: 0;
-  text-align: left;
-  font-size: var(--fs-82);
-  color: var(--text-black);
-  font-family: var(--font-golos-text);
-}
-.frameChild,
-.patternIcon {
+/* ============================================================
+   Section "Нам довіряють"
+   Figma spec:
+     block       : 1920 × 1176 px, bg #F9F7F2, margin-left -2px
+     title       : Golos Text 600 SemiBold, 82px / 120%, -1px tracking,
+                   uppercase, color #2C2C27, top 152px from card,
+                   left/right 609px (centered)
+     logos       : transparent PNGs (no card behind them)
+   ============================================================ */
+.section {
   position: relative;
-  display: none;
-  max-width: 100%;
-  flex-shrink: 0;
-}
-.frameChild {
   width: var(--width-1920);
   height: 1176px;
-  background-color: var(--bg-cream);
-}
-.patternIcon {
-  width: 2571px;
-  height: 1165px;
-}
-.wrapper {
-  align-self: stretch;
+  margin-left: -2px;
+  background-color: #f9f7f2;
+  box-sizing: border-box;
+  /* Title pinned at 152px from top, then logos fill the rest */
+  padding: 152px 0 0 0;
   display: flex;
-  align-items: flex-start;
-  padding: var(--padding-0) 489px;
+  flex-direction: column;
+  align-items: center;
   flex-shrink: 0;
+  align-self: stretch;
+  max-width: 100%;
 }
-.h2 {
+
+.title {
   margin: 0;
-  position: relative;
-  font-size: inherit;
-  letter-spacing: var(--ls--1);
-  line-height: 120%;
-  text-transform: uppercase;
+  /* 1920 - 609 - 609 = 702 width, naturally centered by flex */
+  font-family: "Golos Text", var(--font-golos-text), sans-serif;
   font-weight: 600;
-  font-family: inherit;
-  z-index: 1;
+  font-size: 82px;
+  line-height: 120%;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #2c2c27;
+  text-align: center;
+  white-space: nowrap;
 }
-.logo {
-  align-self: stretch;
-  flex: 1;
+
+/* ---- 3-column × 3-row grid of logos ---- */
+.grid {
+  margin-top: 168px; /* gap title → row 1 */
+  width: 1620px; /* leaves ~150px on each side of the 1920 block */
+  flex: 1; /* fill remaining vertical space inside the 1176 block */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+
+.cell {
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: var(--gap-32) var(--gap-20);
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  /* logos sit on the cream background — no card, no border, no shadow */
+  background: transparent;
 }
-.screenshot20260211At1252Wrapper {
-  height: 187px;
-  width: var(--width-494);
-  position: relative;
+
+.cell img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  /* keep their natural aspect ratio */
+  object-fit: contain;
 }
-.screenshot20260211At1252 {
-  position: absolute;
-  height: calc(100% - 25.7px);
-  top: 12.9px;
-  bottom: 12.8px;
-  left: 0;
-  max-height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-.screenshot20260211At1252Container {
-  height: 178px;
-  width: var(--width-494);
-  position: relative;
-}
-.screenshot20260211At12522 {
-  position: absolute;
-  height: calc(100% - 26.5px);
-  top: 13.2px;
-  bottom: 13.3px;
-  left: 0;
-  max-height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-.screenshot20260211At1252Frame {
-  height: 192px;
-  width: var(--width-494);
-  position: relative;
-}
-.screenshot20260211At12523 {
-  position: absolute;
-  height: calc(100% - 20.1px);
-  top: 10.1px;
-  bottom: 10px;
-  left: 0;
-  max-height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-.screenshot20260211At1253Wrapper {
-  height: 194px;
-  width: var(--width-494);
-  position: relative;
-}
-.screenshot20260211At1253 {
-  position: absolute;
-  height: calc(100% - 20.8px);
-  top: 10.2px;
-  bottom: 10.6px;
-  left: 0;
-  max-height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-.screenshot20260211At1253Container {
-  height: 166px;
-  width: var(--width-494);
-  position: relative;
-}
-.screenshot20260211At12524,
-.screenshot20260211At12532,
-.screenshot20260211At12533 {
-  position: absolute;
-  height: calc(100% - 13.3px);
-  top: 6.6px;
-  bottom: 6.7px;
-  left: 0;
-  max-height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-.screenshot20260211At12524,
-.screenshot20260211At12533 {
-  height: calc(100% - 24.1px);
-  top: 12px;
-  bottom: 12.1px;
-}
-.screenshot20260211At12524 {
-  height: calc(100% - 13.5px);
-  top: 6.9px;
-  bottom: 6.6px;
-}
+
+/* Per-logo width caps so visual weight is balanced across the row.
+   Numbers tuned against the design screenshot. */
+.logoNibulon       { width: 420px; }
+.logoKernel        { width: 290px; }
+.logoEpicentr      { width: 400px; }
+.logoMhp           { width: 280px; }
+.logoBurgudzhi     { width: 390px; }
+.logoAgroPivden    { width: 460px; }
+.logoKornackih     { width: 270px; }
+
+/* ---- Responsive: keep the design under-scale logic in App.tsx happy ---- */
 @media screen and (max-width: 1400px) {
-  .rectangleParent {
-    gap: 58px;
+  .section {
+    height: auto;
+    min-height: 900px;
     padding: 99px var(--padding-60) 126px;
-    box-sizing: border-box;
   }
-  .wrapper {
-    padding-left: 244px;
-    padding-right: 244px;
-    box-sizing: border-box;
+  .grid {
+    margin-top: 80px;
+    width: 100%;
+    row-gap: 50px;
   }
 }
+
 @media screen and (max-width: 925px) {
-  .rectangleParent {
-    gap: var(--gap-29);
+  .section {
     padding: var(--padding-64) var(--padding-30) 82px;
-    box-sizing: border-box;
+    min-height: 0;
   }
-  .wrapper {
-    padding-left: 122px;
-    padding-right: 122px;
-    box-sizing: border-box;
-  }
-  .h2 {
+  .title {
     font-size: var(--fs-41);
     line-height: var(--lh-59);
+    white-space: normal;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    row-gap: 40px;
+    margin-top: 40px;
+  }
+  .logoNibulon, .logoKernel, .logoEpicentr, .logoMhp,
+  .logoBurgudzhi, .logoAgroPivden, .logoKornackih {
+    width: clamp(140px, 30vw, 280px);
   }
 }
+
 @media screen and (max-width: 450px) {
-  .wrapper {
-    padding-left: var(--padding-20);
-    padding-right: var(--padding-20);
-    box-sizing: border-box;
-  }
-  .h2 {
+  .title {
     font-size: var(--fs-25);
     line-height: var(--lh-39);
+  }
+  .grid {
+    grid-template-columns: 1fr;
   }
 }
