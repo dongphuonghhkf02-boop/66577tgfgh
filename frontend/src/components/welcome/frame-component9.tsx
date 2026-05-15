@@ -5,25 +5,29 @@ export type FrameComponent9Type = {
   className?: string;
 };
 
+/**
+ * Chevron icon (left / right). Точна копія дизайну з Figma:
+ *   - viewBox 0 0 37 37
+ *   - path Chevron Right: M14.592 26.8804 L 23.04 18.4324 L 14.592 9.98438
+ *   - stroke #1B4332, stroke-width 4.608, stroke-linecap square
+ *   - Розмір рендера: 36.86 × 36.86 (як у дизайні)
+ *   - Ліва стрілка — та сама іконка, відзеркалена горизонтально
+ */
 const ArrowIcon: React.FC<{ dir: "left" | "right" }> = ({ dir }) => (
   <svg
-    width="36.864"
-    height="36.864"
-    viewBox="0 0 24 24"
+    width="36.86"
+    height="36.86"
+    viewBox="0 0 37 37"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
+    style={dir === "left" ? { transform: "scaleX(-1)" } : undefined}
   >
     <path
-      d={
-        dir === "left"
-          ? "M19 12H5M5 12L11 6M5 12L11 18"
-          : "M5 12H19M19 12L13 6M19 12L13 18"
-      }
+      d="M14.592 26.8804L23.04 18.4324L14.592 9.98438"
       stroke="#1B4332"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeWidth="4.608"
+      strokeLinecap="square"
     />
   </svg>
 );
