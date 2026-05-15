@@ -9,26 +9,21 @@ export type HowItWorksSection1Type = {
 /**
  * «Технологія врожаю» — секція з 4-ма стадіями.
  *
- * Pin реалізовано на НАТИВНОМУ `position: sticky` для stickyInner.
- * Це усуває дрижіння (jitter), яке було при JS-translateY-pin'і — нативний
- * sticky обробляється у composiotor-thread браузера й не має лагу від rAF.
- *
- * JS відповідає тільки за анімацію карточок (slide-up + fade) на основі
- * scroll-progress 0..1.
- *
- * Структура:
- *   <section>  ← висота = vh * SCROLL_VH / scale (скрол-бюджет)
- *     <div .stickyInner>  ← position: sticky, top: 0, висота = vh / scale
- *       <leaf .leftColumn .cardsHolder>
- *         <cardSlot×4>  ← z-stack, JS керує transform / opacity / z-index
- *       </cardsHolder>
- *     </stickyInner>
- *   </section>
+ * Логіка:
+ *  • Зелена панель (stickyInner) — 600 design-px заввишки, пінитьcя через
+ *    нативний `position: sticky` (без JS-translate → без дрижіння).
+ *  • Sectionʼс height = 600 + 3×VH/scale → дає 3 viewport-висоти скрол-бюджету
+ *    (по 1VH на кожен з 3-х переходів між 4-ма картками).
+ *  • Картки лежать у z-stack, нова виїздить ЗНИЗУ, повністю замінює попередню.
+ *  • Без фейдів-крос-фейдів: попередня картка миттєво ховається (`visibility:
+ *    hidden`) щойно нова стала на місце — це усуває «мерехтіння» від
+ *    напівпрозорого фону (rgba .2) накладеного один на одного.
  */
 
 const N_CARDS = 4;
-const SCROLL_VH = 4;
-const SLIDE_FROM_DESIGN_PX = 1100;
+const SCROLL_PIN_VH = 3; // 3 transitions × 1VH each
+const STICKY_HEIGHT_DESIGN = 600; // ~600px зелена панель за вимогою
+const SLIDE_FROM_DESIGN_PX = 700; // звідки виїздить нова картка (нижче панелі)
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -39,10 +34,7 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
   const sectionRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
-  /* Висоти в design-px. sticky має займати 1 viewport, а секція — N×VH
-     виходячи з реального viewport / scale, щоб скрол-бюджет точно
-     відповідав N×VH у viewport-пікселях. */
-  const [stickyHeightPx, setStickyHeightPx] = useState<number>(0);
+  /* sectionPxHeight (design-px) = stickyHeight + 3 viewport-heights / scale */
   const [sectionPxHeight, setSectionPxHeight] = useState<number>(0);
 
   useLayoutEffect(() => {
@@ -52,8 +44,7 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
         Math.max(window.innerWidth, 1024) / 1920
       );
       const vhDesign = window.innerHeight / scale;
-      setStickyHeightPx(vhDesign);
-      setSectionPxHeight(vhDesign * SCROLL_VH);
+      setSectionPxHeight(STICKY_HEIGHT_DESIGN + SCROLL_PIN_VH * vhDesign);
     };
     compute();
     window.addEventListener("resize", compute);
@@ -71,11 +62,11 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
 
       const rect = section.getBoundingClientRect();
       const sectionTop = rect.top;
-      const sectionH = rect.height;
       const vh = window.innerHeight;
 
+      /* Progress 0..1 над зоною pin'у (SCROLL_PIN_VH viewport-heights у real-px). */
       const scrolledPx = Math.max(0, -sectionTop);
-      const pinTotalPx = Math.max(1, sectionH - vh);
+      const pinTotalPx = Math.max(1, SCROLL_PIN_VH * vh);
       const progress = clamp01(scrolledPx / pinTotalPx);
 
       const transitions = N_CARDS - 1; // 3
@@ -84,61 +75,60 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
         "[data-card-idx]"
       );
 
+      /* Знаходимо «активну» картку: ту, яка зараз ВЕРХНЯ у стопці.
+         Активний індекс = floor(progress * transitions) для transitions=3:
+           progress < 1/3   → активна 0 (показуємо card[0], card[1] виїздить)
+           progress < 2/3   → активна 1
+           progress < 1     → активна 2
+           progress = 1     → активна 3
+       */
+      const activeIdx = Math.min(
+        N_CARDS - 1,
+        Math.floor(progress * transitions + 1e-6)
+      );
+
       cardEls.forEach((el, i) => {
-        if (i === 0) {
-          const t1 = clamp01(progress / (1 / transitions));
-          const fade = easeOutCubic(t1);
-          el.style.transform = "translate3d(0px, 0px, 0px)";
-          el.style.opacity = String(1 - fade);
-          el.style.visibility = fade < 1 ? "visible" : "hidden";
-          el.style.zIndex = "10";
-          return;
-        }
-
-        const winStart = (i - 1) / transitions;
-        const winEnd = i / transitions;
-        const localProg = clamp01(
-          (progress - winStart) / (winEnd - winStart)
-        );
-
-        if (localProg <= 0) {
+        if (i < activeIdx) {
+          /* Усі попередні картки — повністю приховані. Жодного фейду,
+             жодного накладання → жодного «мерехтіння» від rgba .2 фону. */
           el.style.visibility = "hidden";
           el.style.opacity = "0";
-          el.style.transform = `translate3d(0px, ${SLIDE_FROM_DESIGN_PX}px, 0px)`;
-          el.style.zIndex = String(10 + i * 10);
+          el.style.transform = "translate3d(0, 0, 0)";
+          el.style.zIndex = String(i + 1);
           return;
         }
 
-        const eased = easeOutCubic(localProg);
-        const y = SLIDE_FROM_DESIGN_PX * (1 - eased);
+        if (i === activeIdx) {
+          /* Активна картка: за замовчуванням на місці (y=0). Але якщо
+             це не нульова — і прогрес ще не досяг її reveal-точки повністю
+             (через округлення Math.floor + epsilon), вона може ще проходити
+             slide-up. Обчислимо локальний прогрес активної картки. */
+          if (i === 0) {
+            el.style.visibility = "visible";
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+            el.style.zIndex = String(i + 10);
+            return;
+          }
+          const winStart = (i - 1) / transitions;
+          const winEnd = i / transitions;
+          const localProg = clamp01(
+            (progress - winStart) / (winEnd - winStart)
+          );
+          const eased = easeOutCubic(localProg);
+          const y = SLIDE_FROM_DESIGN_PX * (1 - eased);
+          el.style.visibility = "visible";
+          el.style.opacity = "1";
+          el.style.transform = `translate3d(0, ${y}px, 0)`;
+          el.style.zIndex = String(i + 10);
+          return;
+        }
 
-        el.style.visibility = "visible";
-        el.style.opacity = String(clamp01(localProg * 2.5));
-        el.style.transform = `translate3d(0px, ${y}px, 0px)`;
-        el.style.zIndex = String(10 + i * 10);
-      });
-
-      /* Fade-out для проміжних карток коли над ними з'являється наступна. */
-      cardEls.forEach((el, i) => {
-        if (i === 0) return;
-        if (i >= N_CARDS - 1) return;
-        const winStart = (i - 1) / transitions;
-        const winEnd = i / transitions;
-        const localProg = clamp01(
-          (progress - winStart) / (winEnd - winStart)
-        );
-        if (localProg < 1) return;
-
-        const nextStart = i / transitions;
-        const nextEnd = (i + 1) / transitions;
-        const nextProg = clamp01(
-          (progress - nextStart) / (nextEnd - nextStart)
-        );
-        if (nextProg <= 0) return;
-
-        const f = easeOutCubic(nextProg);
-        el.style.opacity = String(1 - f);
-        el.style.visibility = f < 1 ? "visible" : "hidden";
+        /* i > activeIdx — наступні картки, ще під низом, не видно. */
+        el.style.visibility = "hidden";
+        el.style.opacity = "0";
+        el.style.transform = `translate3d(0, ${SLIDE_FROM_DESIGN_PX}px, 0)`;
+        el.style.zIndex = String(i + 1);
       });
     };
 
@@ -156,21 +146,16 @@ const HowItWorksSection1: React.FC<HowItWorksSection1Type> = ({
       window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [sectionPxHeight, stickyHeightPx]);
+  }, [sectionPxHeight]);
 
   return (
     <section
       ref={sectionRef}
-      style={{ height: sectionPxHeight ? `${sectionPxHeight}px` : "400vh" }}
+      style={{ height: sectionPxHeight ? `${sectionPxHeight}px` : "300vh" }}
       className={[styles.howItWorksSection, className].join(" ")}
       data-testid="how-it-works-section"
     >
-      <div
-        className={styles.stickyInner}
-        style={{
-          height: stickyHeightPx ? `${stickyHeightPx}px` : "100vh",
-        }}
-      >
+      <div className={styles.stickyInner}>
         <img
           className={styles.leaf}
           src="/watermark.svg"
