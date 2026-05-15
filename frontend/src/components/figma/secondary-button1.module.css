@@ -1,0 +1,22 @@
+.secondaryButton {
+  cursor: pointer;
+  border: var(--border-2);
+  padding: var(--padding-12) var(--padding-16);
+  background-color: transparent;
+  height: var(--height-60);
+  width: 276px;
+  border-radius: var(--br-4);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-12);
+}
+.div {
+  position: relative;
+  font-size: var(--fs-16);
+  font-weight: 500;
+  font-family: var(--font-golos-text);
+  color: var(--brand-accent-secondary-default);
+  text-align: left;
+}

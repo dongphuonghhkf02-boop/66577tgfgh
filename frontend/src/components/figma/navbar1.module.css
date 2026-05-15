@@ -1,0 +1,111 @@
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px 120px;
+  box-shadow:
+    0 1px 0 rgba(20, 30, 12, 0.06),
+    0 8px 24px rgba(20, 30, 12, 0.04);
+  z-index: 10;
+}
+
+.mainContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  gap: 32px;
+}
+
+.leftContant {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  height: 82px;
+  width: 116px;
+  position: relative;
+  object-fit: contain;
+  display: block;
+}
+
+/* === Nav links (Каталог · Культури · Про нас · Контакти) === */
+.link {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  text-align: left;
+  font-family: var(--font-golos-text);
+  color: var(--text-black);
+}
+
+.div,
+.div2,
+.div3,
+.div4 {
+  position: relative;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: color 0.18s ease;
+  white-space: nowrap;
+}
+
+.div:hover,
+.div2:hover,
+.div3:hover,
+.div4:hover {
+  color: var(--brand-accent-secondary-default);
+}
+
+/* === Right group: icons + button === */
+.rightContent {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-shrink: 0;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconButtons,
+.iconButtons2,
+.iconButtons3 {
+  height: 40px;
+  width: 40px;
+  position: relative;
+  border-radius: 50%;
+  background-color: var(--decorative-2);
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.18s ease;
+}
+
+.iconButtons:hover,
+.iconButtons2:hover,
+.iconButtons3:hover {
+  background-color: #d8dccd;
+}

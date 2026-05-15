@@ -1,0 +1,247 @@
+/* ============================================================
+ * Section «Ми не просто виробляємо препарати»
+ *
+ *   - Outer .parent: 1680px (matches text frame from prev iteration)
+ *   - Heading: 1680 wide, fs 82, uppercase, ls -1
+ *   - Description: right-aligned 840 wide, fs 28
+ *   - Split row 50/50:
+ *       imagePane: ~838 wide (Figma frame 838×911 for bottles)
+ *       greenPane: ~838 wide, bg-green
+ *   - Feature stack inside green pane: 483 × 478 frame, 3 cards
+ *   - All feature text colour: cream #F9F7F2 (var(--bg-cream))
+ * ============================================================ */
+
+.parent {
+  width: 1680px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  flex-shrink: 0;
+  text-align: left;
+  font-family: var(--font-golos-text);
+  color: var(--text-black);
+  background-color: var(--bg-card);
+}
+
+/* ---------- Heading ---------- */
+.h1 {
+  margin: 0;
+  width: 100%;
+  padding: 0 var(--padding-20) 80px 0;
+  box-sizing: border-box;
+  font-size: var(--fs-82);
+  letter-spacing: var(--ls--1);
+  line-height: 120%;
+  text-transform: uppercase;
+  font-family: inherit;
+  color: var(--text-black);
+}
+.span {
+  font-weight: 600;
+}
+.span2 {
+  font-family: var(--font-commissioner);
+  font-weight: 400;
+  color: var(--text-grey);
+}
+
+/* ---------- Description (right column) ---------- */
+.descriptionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  width: 100%;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+.descriptionText {
+  width: 840px;
+  max-width: 100%;
+  font-size: var(--fs-28);
+  line-height: 140%;
+  font-weight: 400;
+  font-family: var(--font-golos-text);
+  color: var(--text-black);
+}
+.descriptionText b {
+  font-weight: 700;
+}
+.p {
+  margin: 0;
+}
+
+/* ---------- Split row: image | green panel ---------- */
+.splitRow {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+  position: relative;
+  overflow: visible;
+}
+
+/* ---- Image pane (Figma frame 838×911 for bottles+field) ---- */
+.imagePane {
+  position: relative;
+  width: 50%;            /* 840 of 1680 */
+  min-height: 720px;
+  overflow: visible;     /* allow bottles to poke above/below the row */
+  isolation: isolate;
+}
+.imgField {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+/* Bottles composite stays inside imagePane width (so the 1L bottle sits exactly
+ * on the seam with the green panel without covering the feature text).
+ * The bottle cap pokes a little above the row top. */
+.imgBottles {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3%;
+  width: 100%;
+  height: 116%;
+  object-fit: contain;
+  object-position: bottom center;
+  z-index: 5;
+  pointer-events: none;
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.28));
+}
+
+/* ---- Green pane: features anchored LEFT, padding-right 120, padding-bottom 182 ---- */
+.greenPane {
+  width: 50%;
+  background-color: var(--bg-green);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 132px 120px 182px 120px;
+  box-sizing: border-box;
+  min-height: 720px;
+  color: var(--bg-cream);
+  position: relative;
+}
+
+/* ---- Feature stack: 478 height, 3 cards ---- */
+.featureStack {
+  width: 100%;
+  max-width: 100%;
+  min-height: 478px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.featureRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.featureIcon {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: block;
+}
+.featureTitle {
+  margin: 0;
+  font-family: var(--font-commissioner);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: var(--bg-cream);
+}
+.featureBody {
+  margin: 0;
+  padding-left: 72px; /* aligns body under the title (icon 60 + gap 12) */
+  font-family: var(--font-golos-text);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 120%;
+  color: var(--bg-cream);
+  opacity: 0.95;
+  max-width: 447px;
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 1700px) {
+  .parent {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1275px) {
+  .h1 {
+    padding-bottom: 56px;
+  }
+  .descriptionRow {
+    padding-bottom: 56px;
+  }
+  .greenPane {
+    padding: 60px 60px;
+  }
+  .featureTitle {
+    font-size: 38px;
+  }
+  .featureBody {
+    font-size: 20px;
+  }
+  .featureStack {
+    min-height: 0;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .splitRow {
+    flex-direction: column;
+  }
+  .imagePane,
+  .greenPane {
+    width: 100%;
+    min-height: 0;
+  }
+  .imagePane {
+    height: 460px;
+  }
+  .greenPane {
+    padding: 40px 28px;
+  }
+  .h1 {
+    font-size: var(--fs-41);
+    line-height: var(--lh-59);
+    padding-bottom: 28px;
+  }
+  .descriptionText {
+    width: 100%;
+    font-size: var(--fs-18);
+  }
+  .descriptionRow {
+    padding-bottom: 28px;
+  }
+  .featureStack {
+    width: 100%;
+  }
+  .featureTitle {
+    font-size: 32px;
+  }
+  .featureBody {
+    font-size: 18px;
+  }
+}

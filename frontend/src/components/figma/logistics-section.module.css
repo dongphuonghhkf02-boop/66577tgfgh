@@ -1,0 +1,299 @@
+/* ============================================================
+ * Section: «Логістика живих рішень»
+ * Figma audited spec:
+ *   - frame:           1920 × 1372 (bg #003214 / --brand-accent-secondary-hover)
+ *   - heading frame:   1664 × 144  (centered horizontally)
+ *   - center plant:    1013 × 803
+ *   - feature blocks:  472 × 123 each, gap 8px
+ *   - tag chips:       40px height
+ * Typography uses platform tokens:
+ *   - Heading primary:  Golos Display Bold ~120 / 120%
+ *   - Heading secondary: Commissioner ~120 / 110% (text-grey)
+ *   - Feature heading:  Golos Display Bold 28 / 120%
+ *   - Feature label-top (sub): Golos Body Regular 16
+ *   - Tag body:         Golos Body 18
+ * ============================================================ */
+
+.section {
+  position: relative;
+  width: 100%;
+  min-height: 1372px;
+  background-color: var(--brand-accent-secondary-hover);
+  color: var(--bg-cream);
+  font-family: var(--font-golos-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 86px 128px 120px;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ----- HEADING ROW ----- */
+.heading {
+  width: 1664px;
+  max-width: 100%;
+  height: 144px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: var(--ls--1);
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-size: 120px;
+  line-height: 120%;
+  font-weight: 600;
+  font-family: var(--font-golos-text);
+  flex-shrink: 0;
+  z-index: 5;
+}
+.headingPrimary {
+  color: var(--bg-cream);
+}
+.headingGap {
+  display: inline-block;
+  width: 0.5em; /* explicit space between words, preserved despite uppercase */
+}
+.headingSecondary {
+  color: var(--text-grey);
+}
+
+/* ----- STAGE ----- */
+.stage {
+  position: relative;
+  width: 1664px;
+  max-width: 100%;
+  flex: 1;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1040px;
+}
+
+/* Dashed circular orbit — 921 × 921 (perfect circle) per Figma */
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 921px;
+  height: 921px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--bg-green);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Center plant image */
+.plant {
+  position: relative;
+  width: 1013px;
+  height: 803px;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.45));
+}
+
+/* ===== FEATURE BLOCKS — 472 × 123 Hug, gap 8 between icon and text ===== */
+.feature {
+  position: absolute;
+  width: 472px;
+  min-height: 123px;
+  z-index: 3;
+}
+.feature.topLeft {
+  top: 110px;
+  left: 0;
+}
+.feature.topRight {
+  top: 110px;
+  right: 0;
+}
+.feature.bottomLeft {
+  bottom: 110px;
+  left: 0;
+}
+.feature.bottomRight {
+  bottom: 110px;
+  right: 0;
+}
+
+.featureRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.featureText.alignEnd {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.featureLabelTop {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-cream);
+  opacity: 0.85;
+  line-height: 120%;
+  font-family: var(--font-golos-text);
+}
+.featureLabelBottom {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--bg-cream);
+  line-height: 120%;
+  letter-spacing: var(--ls--0_5);
+  font-family: var(--font-golos-text);
+}
+
+.featureIcon,
+.featureIconImg {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.featureIconImg {
+  display: block;
+  object-fit: contain;
+}
+
+/* ===== FLOATING TAG CHIPS — sit on the 921×921 orbit (radius 460.5) =====
+ * Per Figma: height 40 fixed, width Hug (content), radius 4,
+ *            padding 4px 16px, gap 3px, bg #FFFFFF.
+ */
+.tag {
+  position: absolute;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 16px;
+  background-color: var(--bg-card);
+  color: var(--brand-accent-secondary-default);
+  border-radius: 4px;
+  font-family: var(--font-golos-text);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+  z-index: 4;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* "Активне" — top of circle (12 o'clock), centered on the upper arc */
+.tagActive {
+  top: calc(50% - 460.5px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* "+4.3°C" — left of circle (9 o'clock), centered on the left arc */
+.tagTemp {
+  top: 50%;
+  left: calc(50% - 460.5px);
+  transform: translate(-50%, -50%);
+}
+
+/* "Біобезпечне" — ~5 o'clock on the bottom-right arc.
+ * Angle from vertical-down ≈ 25°  →  Δx = 460.5·sin25° ≈ 195,
+ *                                    Δy = 460.5·cos25° ≈ 417
+ */
+.tagBio {
+  top: calc(50% + 417px);
+  left: calc(50% + 195px);
+  transform: translate(-50%, -50%);
+}
+
+/* ===== Responsive ===== */
+@media screen and (max-width: 1700px) {
+  .heading {
+    font-size: 90px;
+  }
+}
+
+@media screen and (max-width: 1275px) {
+  .section {
+    padding: 60px 48px 80px;
+    min-height: auto;
+  }
+  .heading {
+    font-size: 70px;
+    height: auto;
+  }
+  .stage {
+    min-height: 800px;
+  }
+  .orbit {
+    width: 920px;
+    height: 760px;
+  }
+  .plant {
+    width: 760px;
+    height: auto;
+  }
+  .feature {
+    width: 360px;
+  }
+  .featureLabelBottom {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .section {
+    padding: 48px 24px 64px;
+  }
+  .heading {
+    font-size: 44px;
+    white-space: normal;
+  }
+  .stage {
+    min-height: 600px;
+  }
+  .orbit {
+    width: 600px;
+    height: 540px;
+  }
+  .plant {
+    width: 480px;
+  }
+  .feature {
+    width: 260px;
+  }
+  .feature.topLeft {
+    top: 30px;
+    left: -10px;
+  }
+  .feature.topRight {
+    top: 30px;
+    right: -10px;
+  }
+  .feature.bottomLeft {
+    bottom: 30px;
+    left: -10px;
+  }
+  .feature.bottomRight {
+    bottom: 30px;
+    right: -10px;
+  }
+  .featureLabelBottom {
+    font-size: 18px;
+  }
+}

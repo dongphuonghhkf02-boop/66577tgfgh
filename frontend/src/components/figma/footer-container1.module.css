@@ -1,0 +1,79 @@
+.footerContainer,
+.mainRow {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+}
+.footerContainer {
+  flex-direction: column;
+  gap: 143px;
+  z-index: 1;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: var(--fs-18);
+  color: var(--text-cream);
+  font-family: var(--font-golos-text);
+}
+.mainRow {
+  overflow: hidden;
+  gap: 418px;
+}
+.logoIcon {
+  height: 261px;
+  width: 366px;
+  position: relative;
+  object-fit: cover;
+}
+.colum,
+.navColumn {
+  display: flex;
+  align-items: flex-start;
+}
+.colum {
+  flex: 1;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--gap-32) 108px;
+}
+.navColumn {
+  flex-direction: column;
+  gap: var(--gap-24);
+}
+.b {
+  position: relative;
+  line-height: 140%;
+}
+.navLinks {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 29px;
+}
+.div {
+  width: var(--width-186);
+  position: relative;
+  line-height: 140%;
+  display: inline-block;
+}
+.copyrightContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: var(--fs-12);
+}
+.copyrightInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-8);
+}
+.antDesigncopyrightCircleOuIcon {
+  width: var(--width-18);
+  position: relative;
+  max-height: 100%;
+}
+.div6 {
+  position: relative;
+  line-height: 120%;
+}

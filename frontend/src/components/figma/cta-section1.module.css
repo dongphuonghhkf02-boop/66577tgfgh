@@ -1,0 +1,125 @@
+.anna50943AModernAgronomistParent,
+.ctaSection {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.ctaSection {
+  height: 984px;
+  overflow: hidden;
+  flex-shrink: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 239px 329px;
+  box-sizing: border-box;
+}
+.anna50943AModernAgronomistParent {
+  position: relative;
+  isolation: isolate;
+}
+.anna50943AModernAgronomistIcon {
+  width: 1968px;
+  position: absolute;
+  margin: 0 !important;
+  top: -427px;
+  left: -361px;
+  max-height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.headline,
+.mainContant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mainContant {
+  flex: 1;
+  gap: var(--gap-60);
+  max-width: 100%;
+  z-index: 1;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: var(--fs-82);
+  color: var(--bg-cream);
+  font-family: var(--font-golos-text);
+}
+.headline {
+  align-self: stretch;
+  gap: var(--gap-16);
+}
+.h1,
+.h2 {
+  margin: 0;
+  position: relative;
+  text-transform: uppercase;
+}
+.h2 {
+  align-self: stretch;
+  font-size: inherit;
+  letter-spacing: var(--ls--1);
+  line-height: 120%;
+  font-weight: 600;
+  font-family: inherit;
+}
+.h1 {
+  width: 1171px;
+  font-size: 44px;
+  letter-spacing: var(--ls--0_5);
+  line-height: 140%;
+  font-weight: 500;
+  font-family: var(--font-commissioner);
+  display: inline-block;
+}
+.buttonGroup {
+  width: 364px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--fs-18);
+}
+.spacer {
+  position: relative;
+  line-height: 140%;
+}
+@media screen and (max-width: 1275px) {
+  .ctaSection {
+    padding-left: 164px;
+    padding-right: 164px;
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 900px) {
+  .ctaSection {
+    padding: 155px 82px;
+    box-sizing: border-box;
+  }
+  .mainContant {
+    gap: var(--gap-30);
+  }
+  .h2 {
+    font-size: var(--fs-41);
+    line-height: var(--lh-59);
+  }
+  .h1 {
+    font-size: 35px;
+    line-height: 49px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .ctaSection {
+    padding-top: 101px;
+    padding-bottom: 101px;
+    box-sizing: border-box;
+  }
+  .h2 {
+    font-size: var(--fs-25);
+    line-height: var(--lh-39);
+  }
+  .h1 {
+    font-size: var(--fs-26);
+    line-height: var(--lh-37);
+  }
+}

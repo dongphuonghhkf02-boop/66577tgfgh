@@ -1,0 +1,89 @@
+.background,
+.footer {
+  background-color: var(--text-black);
+  flex-shrink: 0;
+}
+.footer {
+  width: var(--width-1920);
+  height: 579px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--padding-120);
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  gap: var(--gap-60);
+  z-index: 1;
+  text-align: left;
+  font-size: var(--fs-12);
+  color: var(--text-cream);
+  font-family: var(--font-golos-text);
+}
+.background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  margin: 0 !important;
+  top: 579px;
+  right: 0;
+  bottom: -579px;
+  left: 0;
+  z-index: 0;
+}
+.socialLinks,
+.socialLinksContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.socialLinks {
+  width: 251px;
+  margin: 0 !important;
+  position: absolute;
+  top: 381px;
+  left: 1518px;
+  z-index: 2;
+  flex-shrink: 0;
+  font-size: var(--fs-18);
+}
+.socialLinksContainer {
+  align-self: stretch;
+  gap: var(--gap-60);
+}
+.b,
+.socialHeader {
+  align-self: stretch;
+}
+.socialHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-24);
+  flex-shrink: 0;
+}
+.b {
+  position: relative;
+  line-height: 140%;
+}
+.iconsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-16);
+}
+.groupIcon,
+.groupIcon2 {
+  height: var(--height-32);
+  width: var(--width-32);
+  position: relative;
+}
+.wwwolhalazarievacom {
+  position: relative;
+  font-size: var(--fs-14);
+  line-height: 120%;
+  flex-shrink: 0;
+}
+.wwwolhalazarievacom2 {
+  text-decoration: underline;
+}

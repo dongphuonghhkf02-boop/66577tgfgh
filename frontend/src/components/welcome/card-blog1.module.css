@@ -1,0 +1,112 @@
+.cardBlog {
+  height: var(--height-720);
+  flex: 1;
+  border-radius: var(--br-6);
+  background-color: var(--bg-cream);
+  border: var(--border-5);
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  isolation: isolate;
+  gap: var(--gap-32);
+  text-align: left;
+  font-size: var(--fs-14);
+  color: var(--text-black);
+  font-family: var(--font-golos-text);
+}
+.imageContainerIcon {
+  align-self: stretch;
+  height: var(--height-456);
+  max-width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+  object-fit: cover;
+  z-index: 0;
+}
+.tag {
+  margin: 0 !important;
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  align-items: center;
+  z-index: 1;
+}
+.content,
+.textBlock {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  flex: 1;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--padding-0) var(--padding-20) var(--padding-24);
+  gap: var(--gap-20);
+  z-index: 2;
+}
+.textBlock {
+  align-items: flex-start;
+  gap: var(--gap-12);
+}
+.div {
+  width: var(--width-504);
+  position: relative;
+  line-height: 100%;
+}
+.description,
+.textBlock2 {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.textBlock2 {
+  gap: var(--gap-12);
+  font-size: var(--fs-24);
+}
+.description {
+  gap: var(--gap-4);
+}
+.role,
+.title {
+  position: relative;
+  flex-shrink: 0;
+}
+.title {
+  margin: 0;
+  align-self: stretch;
+  font-size: inherit;
+  font-weight: 600;
+  font-family: inherit;
+  display: -webkit-inline-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.role {
+  width: var(--width-504);
+  font-size: var(--fs-14);
+  color: var(--color-black);
+}
+.description2 {
+  width: 100%;
+  position: relative;
+  font-size: var(--fs-18);
+  line-height: 140%;
+  display: -webkit-inline-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-width: var(--max-w-680);
+}
+@media screen and (max-width: 925px) {
+  .cardBlog {
+    min-width: 100%;
+  }
+}

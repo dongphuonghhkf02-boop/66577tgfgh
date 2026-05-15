@@ -1,0 +1,287 @@
+.aboutCompany {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  padding: var(--padding-0) var(--padding-0) 277px;
+  box-sizing: border-box;
+  max-width: 100%;
+  text-align: left;
+  font-size: var(--fs-44);
+  color: var(--brand-accent-primary-default);
+  font-family: var(--font-commissioner);
+}
+.aboutUsSection,
+.backgroundNoise,
+.backgroundNoiseParent {
+  background-color: var(--brand-accent-secondary-hover);
+  max-width: 100%;
+}
+.aboutUsSection {
+  height: 1283px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+}
+.backgroundNoise,
+.backgroundNoiseParent {
+  flex-shrink: 0;
+}
+.backgroundNoiseParent {
+  margin-top: -2px;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--padding-0) var(--padding-0) 407px 101px;
+  box-sizing: border-box;
+  gap: 35px;
+}
+.backgroundNoise {
+  height: 1689px;
+  width: var(--width-1920);
+  position: relative;
+  display: none;
+}
+.topQuotes,
+.topQuotesWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.topQuotesWrapper {
+  flex: 1;
+  padding: var(--padding-0) var(--padding-0) 53px;
+  box-sizing: border-box;
+  min-width: 604px;
+  min-height: 1119px;
+  flex-shrink: 0;
+}
+.topQuotes {
+  align-self: stretch;
+  gap: var(--gap-80);
+}
+.h1 {
+  margin: 0;
+  position: relative;
+  font-size: inherit;
+  letter-spacing: var(--ls--0_5);
+  line-height: 140%;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-family: inherit;
+  padding-right: 27px;
+  z-index: 1;
+}
+.span {
+  color: var(--bg-card);
+}
+.integrateBio {
+  align-self: stretch;
+  justify-content: flex-end;
+  padding: var(--padding-0) var(--padding-0) 76px;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: var(--fs-24);
+  color: var(--brand-accent-primary-default);
+  font-family: var(--font-golos-text);
+}
+.integrateBio,
+.noCompromises,
+.todayInvestment {
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.todayInvestment {
+  width: 712px;
+  flex-direction: column;
+  gap: var(--gap-60);
+}
+.noCompromises {
+  width: 632px;
+  padding: var(--padding-0) var(--padding-5);
+  box-sizing: border-box;
+}
+.div {
+  height: 145px;
+  flex: 1;
+  position: relative;
+  font-weight: 600;
+  display: inline-block;
+  max-width: 100%;
+  z-index: 1;
+}
+.span2 {
+  color: var(--text-cream);
+}
+.h3 {
+  margin: 0;
+  position: relative;
+  font-size: var(--fs-28);
+  line-height: 120%;
+  font-weight: 400;
+  font-family: inherit;
+  z-index: 1;
+}
+.span5 {
+  color: var(--text-cream);
+  white-space: pre-wrap;
+}
+.founderBlock,
+.foundingTeam,
+.text {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+}
+.foundingTeam {
+  height: 185px;
+  justify-content: center;
+  padding: var(--padding-0) var(--padding-20) var(--padding-0) 108px;
+  box-sizing: border-box;
+  max-width: 100%;
+  text-align: left;
+  font-size: var(--fs-28);
+  color: var(--text-cream);
+  font-family: var(--font-golos-text);
+}
+.founderBlock,
+.text {
+  flex-direction: column;
+}
+.founderBlock {
+  gap: 37px;
+  max-width: 100%;
+}
+.text {
+  flex: 1;
+  gap: var(--gap-6);
+  z-index: 2;
+}
+.h2,
+.h22 {
+  margin: 0;
+  position: relative;
+  font-size: inherit;
+  font-weight: 400;
+  font-family: inherit;
+}
+.h2 {
+  width: 573px;
+  line-height: 125%;
+  display: inline-block;
+}
+.h22 {
+  line-height: 120%;
+  color: var(--bg-green);
+}
+.closeUpGreenLeafNervesWitIcon {
+  width: 855px;
+  position: relative;
+  max-height: 100%;
+  object-fit: cover;
+  max-width: 100%;
+  z-index: 2;
+  flex-shrink: 0;
+}
+@media screen and (max-width: 1850px) {
+  .aboutUsSection {
+    height: auto;
+  }
+  .backgroundNoiseParent {
+    flex-wrap: wrap;
+    padding-left: var(--padding-20);
+    padding-top: var(--padding-20);
+    padding-right: var(--padding-20);
+    box-sizing: border-box;
+  }
+  .closeUpGreenLeafNervesWitIcon {
+    flex: 1;
+  }
+}
+@media screen and (max-width: 1400px) {
+  .aboutCompany {
+    padding-bottom: 180px;
+    box-sizing: border-box;
+  }
+  .backgroundNoiseParent,
+  .topQuotesWrapper {
+    padding-bottom: 265px;
+    box-sizing: border-box;
+  }
+  .topQuotesWrapper {
+    padding-bottom: 34px;
+  }
+  .topQuotes {
+    gap: var(--gap-40);
+  }
+}
+@media screen and (max-width: 925px) {
+  .aboutCompany {
+    padding-bottom: 117px;
+    box-sizing: border-box;
+  }
+  .backgroundNoiseParent {
+    gap: 17px;
+    padding-bottom: 172px;
+    box-sizing: border-box;
+  }
+  .topQuotesWrapper {
+    padding-bottom: var(--padding-22);
+    box-sizing: border-box;
+    min-width: 100%;
+  }
+  .h1 {
+    font-size: var(--fs-35);
+    line-height: var(--lh-49);
+  }
+  .todayInvestment {
+    gap: var(--gap-30);
+  }
+  .foundingTeam {
+    padding-left: 54px;
+    box-sizing: border-box;
+  }
+  .founderBlock {
+    gap: var(--gap-18);
+  }
+}
+@media screen and (max-width: 450px) {
+  .aboutCompany {
+    padding-bottom: 76px;
+    box-sizing: border-box;
+  }
+  .backgroundNoiseParent {
+    padding-bottom: 112px;
+    box-sizing: border-box;
+  }
+  .topQuotes {
+    gap: var(--gap-20);
+  }
+  .h1 {
+    font-size: var(--fs-26);
+    line-height: var(--lh-37);
+  }
+  .div {
+    font-size: var(--fs-19);
+  }
+  .h3 {
+    font-size: var(--fs-22);
+    line-height: 27px;
+  }
+  .foundingTeam {
+    padding-left: var(--padding-20);
+    box-sizing: border-box;
+  }
+  .h2,
+  .h22 {
+    font-size: var(--fs-22);
+  }
+  .h2 {
+    line-height: var(--lh-28);
+  }
+  .h22 {
+    line-height: 27px;
+  }
+}

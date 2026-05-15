@@ -1,0 +1,129 @@
+.reviewArea,
+.reviewSection {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.reviewArea {
+  width: 1820px;
+  height: 1110px;
+  align-items: flex-end;
+  padding: var(--padding-0) var(--padding-0) 279px var(--padding-20);
+  box-sizing: border-box;
+  text-align: left;
+  font-size: var(--fs-120);
+  color: var(--brand-accent-secondary-default);
+  font-family: var(--font-golos-text);
+}
+.reviewSection {
+  align-self: stretch;
+  height: 831px;
+  overflow: hidden;
+  flex-shrink: 0;
+  align-items: flex-start;
+  gap: 120px;
+  z-index: 1;
+}
+.headlineButton {
+  width: var(--width-1680);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.div {
+  flex: 1;
+  position: relative;
+  text-transform: uppercase;
+}
+.span {
+  line-height: 120%;
+}
+.span2 {
+  letter-spacing: var(--ls--1);
+  font-weight: 600;
+}
+.span3,
+.span4 {
+  font-family: var(--font-commissioner);
+}
+.span3 {
+  font-weight: 600;
+}
+.span4 {
+  font-size: var(--fs-100);
+  letter-spacing: var(--ls--1);
+  line-height: 110%;
+  color: var(--text-black);
+}
+.imageParent,
+.reviewGroup {
+  align-self: stretch;
+  display: flex;
+  max-width: 100%;
+}
+.reviewGroup {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 79px;
+}
+.imageParent {
+  align-items: flex-start;
+  gap: var(--gap-24);
+}
+.imageIcon {
+  height: var(--height-404);
+  width: var(--width-504);
+  border-radius: var(--br-6);
+  object-fit: cover;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.switchArea {
+  width: 336px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--padding-0) var(--padding-20);
+  box-sizing: border-box;
+  max-width: 100%;
+  margin-top: -96px;
+  position: relative;
+}
+@media screen and (max-width: 1850px) {
+  .imageParent {
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 1400px) {
+  .reviewArea {
+    padding-bottom: 181px;
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 925px) {
+  .reviewArea {
+    padding-bottom: 118px;
+    box-sizing: border-box;
+  }
+  .reviewSection {
+    gap: var(--gap-60);
+  }
+  .div {
+    font-size: var(--fs-50);
+  }
+  .reviewGroup {
+    gap: 39px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .reviewSection {
+    gap: var(--gap-30);
+  }
+  .div {
+    font-size: var(--fs-30);
+  }
+  .reviewGroup {
+    gap: var(--gap-20);
+  }
+}
