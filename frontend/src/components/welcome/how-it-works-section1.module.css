@@ -1,32 +1,46 @@
 /* =========================================================================
    How It Works Section — «ТЕХНОЛОГІЯ ВРОЖАЮ»
-   ОРИГИНАЛЬНЫЕ карточки из Figma (753×399, semi-transparent olive) —
-   мы НЕ меняем их стиль, только анимируем позицию.
-   ------------------------------------------------------------------------
-     • bg                #1B4332
-     • title  Commissioner 100  #ACB14F  (SemiBold + Regular)
-     • subtitle Commissioner 36  Regular  #F9F7F2
-     • button «Замовити дзвінок»  462×54  #ACB14F
-     • cards  753×399 (нативные Figma), 4 шт. в правом столбце
-     • cards animation: STACK_PEEK 80 → CARD_OFFSET 412 design-px
-                        (412 = 399 height + 13 gap = natural design spread)
-     • leftColumn / CTA — СТАТИЧНЫЕ (никакого transform)
+   Card-stack scroll-pinned animation.
+
+   Section parent: tall (4×VH), used purely as scroll-room.
+   Inside it: a "stickyInner" wrapper — exactly 1 viewport-height tall — that
+   JS pins to the top of the viewport via translateY for the duration of the
+   pin range. Inside stickyInner: left column (static) + cards-holder where
+   4 cards are stacked at the SAME absolute position; JS animates their
+   translateY / opacity / z-index.
    ========================================================================= */
 
 .howItWorksSection {
-  align-self: stretch;
   position: relative;
-  isolation: isolate;
-  overflow: clip;
+  align-self: stretch;
   width: 100%;
   background-color: var(--brand-accent-secondary-default); /* #1B4332 */
   font-family: var(--font-commissioner);
   color: var(--bg-green);
   font-size: 100px;
   text-align: left;
+  /* height: set inline via JS (sectionPxHeight) so total scroll = N × VH */
+  /* Don't clip the sticky inner — let it be pinned by transform */
+  overflow: hidden;
+  isolation: isolate;
 }
 
-/* ---------- декоративный лист — ОДИН, большой ---------- */
+/* ---------- sticky inner: pinned to viewport via JS during scroll ---------- */
+.stickyInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--width-1920);
+  /* exactly 1 viewport-height in design-px (computed via vh / scale at runtime
+     is fine, but for simplicity 100vh works inside the scaled container too,
+     because 100vh resolves to actual viewport height in CSS pixels). */
+  height: 100vh;
+  will-change: transform;
+  z-index: 1;
+  /* So that absolutely-positioned children resolve against this */
+}
+
+/* ---------- decorative leaf ---------- */
 .leaf {
   position: absolute;
   pointer-events: none;
@@ -41,16 +55,13 @@
   transform: rotate(-4deg);
 }
 
-/* ---------- левая колонка — СТАТИЧНАЯ, никакого transform ---------- */
+/* ---------- left column (static within pin) ---------- */
 .leftColumn {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 150px;
+  left: 120px;
   z-index: 5;
-  padding-top: 150px;
-  padding-left: 120px;
-  padding-right: 920px;
-  padding-bottom: 60px;
+  width: 880px;
   box-sizing: border-box;
 }
 
@@ -113,36 +124,40 @@
   color: var(--text-cream);
 }
 
-/* ---------- правая колонка: оригинальные карточки 753×399 ----------
-   cardsColumn pin'ится через JS, чтобы анимация играла внутри viewport. */
-.cardsColumn {
+/* ---------- cards holder: 4 stacked cards in the same XY ---------- */
+.cardsHolder {
   position: absolute;
   top: 290px;
   right: 60px;
   width: 753px;
-  /* высота под полный spread: 4×399 + 3×13 = 1635 design-px */
-  height: 1635px;
+  height: 399px;
   z-index: 2;
-  will-change: transform;
+  /* No overflow:hidden — cards slide in from below, must be visible
+     during transition. The section itself clips via overflow:hidden. */
 }
 
-/* Карточки — ровно нативные Figma-размеры.  НЕ ПЕРЕОПРЕДЕЛЯЕМ
-   background/border/shadow/typography — оставляем как есть в card-step1.
-   Только: position:absolute (для translateY) + жёсткий замок размеров,
-   чтобы flex-row или viewport media-queries их не сжимали. */
-.cardsColumn > section {
-  position: absolute !important;
+.cardSlot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 753px;
+  height: 399px;
+  will-change: transform, opacity;
+  /* Smooth out raf quantisation */
+  transition: opacity 0.18s linear;
+  backface-visibility: hidden;
+}
+
+/* keep the inner CardStep1 <section> at the same size as its slot */
+.cardSlot > section {
+  position: relative !important;
   top: 0 !important;
   left: 0 !important;
   width: 753px !important;
   height: 399px !important;
-  min-width: 753px !important;
-  max-width: 753px !important;
-  flex: 0 0 399px !important;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  margin: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cardsColumn > section { transition: none !important; }
+  .cardSlot { transition: none !important; }
 }
